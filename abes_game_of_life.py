@@ -1,3 +1,5 @@
+import os
+
 '''
 play Conway's Game of Life with given cells
 '''
@@ -14,6 +16,8 @@ listOfPatterns = {
 
 # grid for checking neighbors
 neighbors = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0,-1), (1, -1), (1, 0), (1, 1)]
+
+clear =	lambda: os.system('clear')
 
 def getArea(gameState):
 	'''makes the grid to check 1 larger on each side than all current cells.
@@ -39,12 +43,12 @@ def wait(gameState):
 	elif s == '': turn(gameState)
 	elif s == 'l':
 		for pattern in listOfPatterns:
-			print(pattern.keys())
+			print(pattern)
 		wait(gameState)
-	else: 
+	else:
 		if s in listOfPatterns.keys():
 			firstTurn(listOfPatterns[s])
-		else: 
+		else:
 			print('pattern not found')
 			wait(gameState)
 def checkNeighbors(row, cell, gameState):
@@ -54,7 +58,7 @@ def checkNeighbors(row, cell, gameState):
 		if [row+friend[0], cell+friend[1]] in gameState:
 			friends += 1
 	return friends
-	
+
 def turn(gameState):
 	'''increment board according to Conway's rules'''
 	if gameState == '':
@@ -64,7 +68,7 @@ def turn(gameState):
 	area = getArea(gameState)
 	minX, minY, maxX, maxY = area[0][0], area[0][1], area[1][0], area[1][1]
 	rowPrint, dieList, bornList = [], [], []
-	
+
 	#game rules
 
 	for row in range(minX, maxX):
@@ -72,7 +76,7 @@ def turn(gameState):
 			friends = checkNeighbors(row, cell, gameState)
 			if friends == 2:
 				pass
-			elif friends > 3 or friends < 2: 
+			elif friends > 3 or friends < 2:
 				if [row, cell] in gameState:
 					dieList.append([row, cell])
 					# print('{},{} should die'.format(row, cell))
@@ -84,22 +88,24 @@ def turn(gameState):
 					# print('{},{} to be born'.format(row, cell))
 	if len(dieList) > 0:
 		for cell in reversed(dieList): gameState.remove(cell)
-	if len(bornList) > 0: 
+	if len(bornList) > 0:
 		for cell in bornList: gameState.append(cell)
 
 	#update graphics and wait
-	
+
 	drawGame(gameState)
 	wait(gameState)
 
 def firstTurn(gameState):
 	'''on first turn, show board only'''
 	gameState = sorted(gameState)
-	drawGame(gameState)	
+	clear()
+	drawGame(gameState)
 	wait(gameState)
 
 def drawGame(gameState):
 	'''output board to text'''
+	clear()
 	area = getArea(gameState)
 	minX, minY, maxX, maxY = area[0][0], area[0][1], area[1][0], area[1][1]
 	rowPrint = []
@@ -111,5 +117,5 @@ def drawGame(gameState):
 			else: rowPrint[y] += '. '
 	for x in rowPrint:
 		print(x)
-	
+
 firstTurn(listOfPatterns['eater1'])
